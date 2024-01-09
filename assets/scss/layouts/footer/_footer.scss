@@ -13,13 +13,57 @@
 //
 // -----------------------------------------------------------------------------
 
+
+  
+
 .footer {
-    background-color: $footer-background;
+    background-color:#28747a ;
     border-top: container("border");
-    padding: spacing("double") 0;
+    padding: 1.875rem 0;
     position: relative;
     transform: translateZ(0); // 3
 }
+.newsletter-container {
+    padding: 1.875rem 0;
+    display: flex;
+    flex-direction: column;
+  
+    @include breakpoint("small") {
+      flex-direction: row;
+      align-items: center;
+      justify-content: space-between;
+  
+      p {
+        font-size: 18px;
+      } 
+    } 
+.newsletter{
+   
+    .button {
+        width: 100%;
+        margin-left: 0;
+        margin-top: 15px;
+        border-radius: 0;
+        border: none;
+        background-color: #fc562a;        
+       
+      }
+}
+.footer-pp-link{
+    margin-top: 5px;
+}
+
+}
+  
+  .footer-pp-link {
+    margin-top: 0px;
+    text-align: right;
+  
+    a {
+      text-decoration: none;
+    }
+  }
+
 
 .footer-title-sr-only {
     height: 1px;
@@ -31,13 +75,18 @@
 }
 
 .footer-info {
-    @include grid-row($behavior: nest);
-    font-size: 0; // 1
+    justify-content: space-between;
+    // @include grid-row($behavior: nest);
+    display: flex;
+    font-size: medium; 
+    li  a{
+        color: white !important;
+    }
 }
 
 .footer-info-col {
     @include grid-column(12);
-    color: stencilColor("color-textSecondary");
+    color: white;
     display: inline-block;
     float: none;
     font-size: fontSize("base"); // 2
@@ -45,8 +94,10 @@
     overflow-wrap: break-word;
     text-align: center;
     vertical-align: top;
+    width: 25%;
     // TODO: specifically use vendor only for IE11 since overflow-wrap is not supported here
     -ms-word-break: break-all;
+
     @include breakpoint("small") {
         text-align: left;
         width: width("6/12");
@@ -67,7 +118,7 @@
 
 .footer-info-col--small {
     @include breakpoint("medium") {
-        width: width("2/12");
+        width: 25%;
     }
 }
 
@@ -101,9 +152,10 @@
 // -----------------------------------------------------------------------------
 
 .footer-info-heading {
-    color: $footer-heading-fontColor;
-    font-size: fontSize("base");
+    color: #fff;
+    font-size: 1rem;
     text-transform: inherit;
+    font-weight: 700;
 }
 
 .footer-info-list {
@@ -122,19 +174,20 @@
 
 .footer-copyright {
     text-align: center;
+  
 
     @include breakpoint("small") {
         text-align: left;
     }
 
     > .powered-by {
-        color: stencilColor("color-textSecondary");
-        font-size: fontSize("tiny");
+        color: #fff;
+        // font-size: fontSize("tiny");
         margin: 0;
     }
 
     a {
-        color: stencilColor("color-textSecondary");
+        
         text-decoration: none;
 
         &:hover {
@@ -165,4 +218,41 @@
 
 .footer-newsletter-summary {
     text-align: left;
+}
+.footer-row-1{
+    background-color: #dae4e6;
+}
+
+.social-media-icons {
+  margin-top: 85px;
+   
+   .icon--instagram{
+    background-color: #fff;
+    width: 28px;
+    height: 28px;
+    margin-right: 20px;
+    svg{
+        cursor: pointer;
+    }
+   
+   }     
+}
+@media only screen and (max-width: 900px) {
+    .show-more{
+        display: block !important;
+    }
+   
+  }
+
+  .footerlist {
+    max-height: 210px;
+    overflow: hidden;
+    transition: max-height 0.9s ease-in-out;
+}
+
+.expanded {
+    max-height: none;
+}
+.show-more{
+    display: none;
 }

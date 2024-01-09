@@ -18,7 +18,7 @@ export default function (secureBaseUrl, cartId) {
     if (window.ApplePaySession) {
         $cartDropdown.addClass('apple-pay-supported');
     }
-
+  
     $body.on('cart-quantity-update', (event, quantity) => {
         $cart.attr('aria-label', (_, prevValue) => prevValue.replace(/\d+/, quantity));
 
@@ -35,7 +35,9 @@ export default function (secureBaseUrl, cartId) {
             localStorage.setItem('cart-quantity', quantity);
         }
     });
-
+    
+   
+  
     $cart.on('click', event => {
         const options = {
             template: 'common/cart-preview',
@@ -63,7 +65,29 @@ export default function (secureBaseUrl, cartId) {
                 .html(response);
             $cartLoading
                 .hide();
+
+//carttotal calculations
+                let shipping = parseFloat($('.mcart-shipping').text().replace('$', '').trim()) || 0;
+                console.log(shipping);
+                
+            let grandTotal = 0;
+                $('.mcart-flex').each(function () {
+            let itemTotal = parseFloat($(this).find('.sub-total').text().replace(/[$,]/g, '').trim()) || 0;
+
+            console.log(itemTotal);
+            grandTotal += itemTotal;
+            });
+            let checkoutTotal = "$" + (grandTotal + shipping).toFixed(2);
+                $('.mcart-total').text(checkoutTotal);
+        
+//.............................................................................
+
         });
+        // $cartDropdown.on('click', event => {
+        //     event.stopPropagation();
+        // });
+
+
     });
 
     let quantity = 0;
@@ -100,4 +124,76 @@ export default function (secureBaseUrl, cartId) {
     } else {
         $body.trigger('cart-quantity-update', quantity);
     }
+
+ 
+//cart increment and decrement.................................................................
+    $(document).on('click', '.cart-increment,.cart-decrement', function (event) {
+        // alert("hi");
+            let container = $(this).closest('.qty-container');
+            let itemId = container.data('cart-itemid');
+            let cartQtyElement = container.find('.cart-qty');
+            let cartQty = parseInt(cartQtyElement.text(), 10);
+            const maxQty = parseInt(cartQtyElement.attr('data-quantity-max'), 10);
+            const minQty = parseInt(cartQtyElement.attr('data-quantity-min'), 10);
+            const minError = cartQtyElement.attr('data-quantity-min-error');
+            const maxError = cartQtyElement.attr('data-quantity-max-error');
+            const newQty = $(this).data('action') === 'inc' ? cartQty + 1 : cartQty - 1;
+            if (newQty < minQty) {
+                return showAlertModal(minError);
+            } else if (maxQty > 0 && newQty > maxQty) {
+                return showAlertModal(maxError);
+            }
+    
+            $cartDropdown
+                .addClass(loadingClass)
+                .html($cartLoading);
+            $cartLoading
+                .show();
+            utils.api.cart.itemUpdate(itemId, newQty, (err, response) => {
+                if (response.data.status === 'succeed') {
+                    const optionss = {
+                        template: 'common/cart-preview'
+                    };
+                    getCartItems(optionss);
+    
+                } else {
+                    cartQuantity();
+                    showAlertModal(response.data.errors.join('\n'));
+                }
+            });
+        })
+//..............................................................
+
+//cart close icon.................................................................
+        $body.on('click', '#cart-close', function () {
+            if (/Mobi|Tablet/i.test(navigator.userAgent)) {
+                $cartDropdown.animate({
+                    right: '-360%'
+                }, 300, function () {
+                    $cartDropdown.removeClass('is-open');
+                    $cartDropdown.removeClass('f-open-dropdown');
+                    $cart.removeClass('is-open');
+                    $('.navUser').css('z-index','auto');
+                });
+            } else {
+                $cartDropdown.animate({
+                    right: '-100%'
+                }, 600, function () {
+                    $cartDropdown.removeClass('is-open');
+                    $cartDropdown.removeClass('f-open-dropdown');
+                    $cart.removeClass('is-open');
+                });
+            }
+        })
+
+
+
+        
 }
+
+// $("#cart-close").click(function(){
+//     alert("hii");
+//     console.log("helloo");
+//     $(".previewCartWrapper").hide();
+// });   
+

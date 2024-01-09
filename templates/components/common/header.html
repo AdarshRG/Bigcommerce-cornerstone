@@ -1,6 +1,6 @@
 <a href="#main-content" class="skip-to-main-link">{{lang 'header.skip_to_main'}}</a>
 {{#if banners.top}}
-<div class="banners" data-banner-location="top">
+<!-- <div class="banners" data-banner-location="top">
     {{#each (limit banners.top_metadata 1)}}
     <div class="banner" data-event-type="promotion" data-entity-id="{{this.id}}" data-name="{{this.banner-name}}" data-position="{{this.location}}" data-banner-id="{{this.banner-name}}">
         <div data-event-type="promotion-click">
@@ -8,18 +8,55 @@
         </div>
     </div>
     {{/each}}
-</div>
+</div> -->
 {{/if}}
 <header class="header" role="banner">
     <a href="#" class="mobileMenu-toggle" data-mobile-menu-toggle="menu">
         <span class="mobileMenu-toggleIcon">Toggle menu</span>
     </a>
     {{> components/common/navigation}}
-
     {{#if page_type '===' 'default'}}
-        <h1 class="header-logo header-logo--{{theme_settings.logo-position}}">
+        <!-- <h1 class="header-logo header-logo--{{theme_settings.logo-position}}">
             {{> components/common/store-logo}}
-        </h1>
+        </h1> -->
+
+
+<div class="main-div  ">
+<div class="container">
+    <div class="navTop">
+        <div class="navItem ">
+           <img src='{{cdn "img/short_logo_-_green_1691561754__32613.png"}}' alt="fav-icon">
+        </div>
+        <div class="navItem">
+        <div class="search-container">
+    <input type="text" class="searchInput" placeholder="What are you looking for? ">
+    <!-- <i class="fa-solid fa-magnifying-glass"></i> -->
+    
+</div>
+
+        </div>
+        <div class="navItem" >
+          <p class="limitedOffer">
+            Need Help <br>
+            <span class="nav-number" >1300 989 324</span>
+          </p>
+        </div>
+        <div class="navItem">
+            <p class="limitedOffer">
+              Click here to <br>
+              <span class="nav-number" >Request Quote</span>
+            </p>
+          </div>
+    </div>
+</div>
+    
+</div>
+
+        <div class="navBottom">
+            
+        </div>
+
+
     {{else}}
         <div class="header-logo header-logo--{{theme_settings.logo-position}}">
             {{> components/common/store-logo}}

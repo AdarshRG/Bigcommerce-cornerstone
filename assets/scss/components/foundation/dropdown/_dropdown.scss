@@ -67,7 +67,6 @@
 
     @include breakpoint("large") {
         display: inline-block;
-        margin-top: 1rem;
     }
 
     .button {
@@ -78,13 +77,14 @@
         }
 
         @include breakpoint("large") {
-            margin-right: spacing("half");
+            // margin-right: spacing("half");
         }
     }
 }
 
 .dropdown-menu-button {
     width: 100%;
+    border: none;
 
     &.is-open {
         border-bottom-left-radius: 0;
@@ -106,6 +106,7 @@
     left: auto !important;
     max-width: none !important;
     width: 100% !important;
+   
 
     @include breakpoint("small") {
         padding-right: 20px;
@@ -116,7 +117,7 @@
     }
 
     @include breakpoint("large") {
-        padding-right: 11px;
+        // padding-right: 11px;
     }
 
     &:focus {
@@ -134,6 +135,8 @@
         border-top-left-radius: 0;
         border-top-right-radius: 0;
         width: 100%;
+        padding: 0;
+        font-size: xx-small;
     }
 
     .button--has-items {

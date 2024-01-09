@@ -40,7 +40,8 @@ export default class ProductDetails extends ProductDetailsBase {
         });
 
         const $productOptionsElement = $('[data-product-option-change]', $form);
-        const hasOptions = $productOptionsElement.html().trim().length;
+        // const hasOptions = $productOptionsElement.html().trim().length;
+        const hasOptions = $productOptionsElement.html() && $productOptionsElement.html().trim().length;
         const hasDefaultOptions = $productOptionsElement.find('[data-default]').length;
         const $productSwatchGroup = $('[id*="attribute_swatch"]', $form);
         const $productSwatchLabels = $('.form-option-swatch', $form);
@@ -57,6 +58,8 @@ export default class ProductDetails extends ProductDetailsBase {
             }
         };
 
+
+        
         $(window).on('load', () => {
             this.registerAddToCartValidation();
             $.each($productSwatchLabels, placeSwatchLabelImage);
@@ -582,5 +585,38 @@ export default class ProductDetails extends ProductDetailsBase {
             bubbles: true,
             detail: { productDetails },
         }));
-    }
+ 
+            
+            $('.lightboxScroller a').on('click', function (event) {
+                event.preventDefault();
+                alert("Image Displaying")
+                // let $slide = $(this).closest('.splide__slide');
+                let url = $(this).find("img").attr("src");
+                console.log("Clicked image URL:", url);
+        
+                if ($('.splide__slide img').length > 0) {
+                    $('.splide__slide img').attr('src', url);
+                    console.log("Image updated.");
+                } else {
+                    console.error("Not found");
+                }
+            });
+
+            // $('.lightboxScroller a').on('click', function (event) {
+            //     event.preventDefault();
+            //     alert("Image Displaying");
+            //     let url = $(this).find("img").attr("src");
+            //     console.log("Clicked image URL:", url);
+            //     let $mainImage = $('.splide__track').find('img');              
+            //     if ($mainImage.length > 0) {
+            //         $mainImage.attr('src', url);
+            //         console.log("Main image updated.");
+            //     } else {
+            //         console.error("Main image not found");
+            //     }
+            // });
+            
+    }  
 }
+  
+   

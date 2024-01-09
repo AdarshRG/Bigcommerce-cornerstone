@@ -22,12 +22,13 @@
             <div class="heroCarousel-image-wrapper">
             {{/if}}
             {{#if @first}}
-                {{> components/common/responsive-img
+                 {{> components/common/responsive-img
                     image=stencil_image
                     class="heroCarousel-image"
                     fallback_size='1280w'
                     lazyload='disabled'
-                }}
+                }} 
+               
             {{else}}
                 {{> components/common/responsive-img
                     image=stencil_image
@@ -35,6 +36,7 @@
                     fallback_size='1280w'
                     lazyload='lazyload'
                 }}
+                
             {{/if}}
             {{#if button_text}}
             </a>
@@ -54,7 +56,9 @@
     {{#if carousel.slides.length '>' 1}}
         {{> components/carousel-content-announcement}}
         {{#if play_pause_button}}
-            {{> components/carousel-play-pause-button}}
+            <!-- {{> components/carousel-play-pause-button}} -->
         {{/if}}
     {{/if}}
+
+    
 </section>

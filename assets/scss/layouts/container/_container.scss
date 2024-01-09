@@ -14,4 +14,7 @@
     @include breakpoint("large") {
         padding: 0 ($container-padding * 4);
     }
+    @include breakpoint("xlarge") {
+        max-width: 1650px;
+    }
 }

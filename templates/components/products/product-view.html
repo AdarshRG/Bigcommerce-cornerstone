@@ -1,15 +1,10 @@
 {{inject 'outOfStockDefaultMessage' (lang 'products.out_of_stock_default_message')}}
 
-<div class="productView"
-    data-event-type="product"
-    data-entity-id="{{product.id}}"
-    data-name="{{product.title}}"
+<div class="productView" data-event-type="product" data-entity-id="{{product.id}}" data-name="{{product.title}}"
     data-product-category="
     {{#each product.category}}
         {{#if @last}}{{this}}{{else}}{{this}}, {{/if}}
-    {{/each}}"
-    data-product-brand="{{product.brand.name}}"
-    data-product-price="
+    {{/each}}" data-product-brand="{{product.brand.name}}" data-product-price="
     {{#or customer (unless settings.hide_price_from_guests)}}
         {{#if product.price.with_tax}}
             {{product.price.with_tax.value}}
@@ -18,260 +13,224 @@
         {{/if}}
     {{else}}
         {{lang 'common.login_for_pricing'}}
-    {{/or}}"
-    data-product-variant="single-product-option">
+    {{/or}}" data-product-variant="single-product-option">
 
     {{#each product.reviews.messages}}
-        {{#if error}}
-            {{> components/common/alert/alert-error error}}
-        {{/if}}
-        {{#if success}}
-            {{> components/common/alert/alert-success success}}
-        {{/if}}
+    {{#if error}}
+    {{> components/common/alert/alert-error error}}
+    {{/if}}
+    {{#if success}}
+    {{> components/common/alert/alert-success success}}
+    {{/if}}
     {{/each}}
 
-    <section class="productView-images" data-image-gallery>
-        {{!--
+    <div class="productView-top">
+        <div class="productView-images" data-image-gallery>
+            {{!--
             Note that these image sizes are coupled to image sizes used in /assets/js/theme/common/product-details.js
             for variant/rule image replacement
-        --}}
-        {{#if product.images.length '>' 1 }}
-        {{> components/carousel-content-announcement}}
-        {{/if}}
-        <figure class="productView-image"
-                data-image-gallery-main
-                {{#if product.main_image}}
-                data-zoom-image="{{getImageSrcset product.main_image (cdn theme_settings.default_image_product) 1x=theme_settings.zoom_size }}"
-                {{/if}}
-                >
-            <div class="productView-img-container">
-                {{!-- Remove the surrounding a-element if there is no main image. --}}
-                {{#if product.main_image}}
-                    <a href="{{getImageSrcset product.main_image (cdn theme_settings.default_image_product) 1x=theme_settings.zoom_size}}"
-                        target="_blank">
-                {{/if}}
-                {{> components/common/responsive-img
-                    image=product.main_image
-                    class="productView-image--default"
-                    fallback_size=theme_settings.product_size
-                    lazyload=theme_settings.lazyload_mode
-                    default_image=theme_settings.default_image_product
-                    otherAttributes="data-main-image"
-                }}
-                {{!-- Remove the surrounding a-element if there is no main image. --}}
-                {{#if product.main_image}}
-                    </a>
-                {{/if}}
-            </div>
-        </figure>
-        <ul class="productView-thumbnails"{{#gt product.images.length 5}} data-slick='{
-                "infinite": false,
-                "mobileFirst": true,
-                "dots": false,
-                "accessibility": false,
-                "slidesToShow": 5,
-                "slidesToScroll": 5
-            }'{{/gt}}>
-            {{#each product.images}}
-                <li class="productView-thumbnail">
-                    <a
-                        class="productView-thumbnail-link"
-                        href="{{getImageSrcset this (cdn ../theme_settings.default_image_product) 1x=../theme_settings.zoom_size}}"
-                        data-image-gallery-item
-                        data-image-gallery-new-image-url="{{getImageSrcset this (cdn ../theme_settings.default_image_product) 1x=../theme_settings.product_size}}"
-                        data-image-gallery-new-image-srcset="{{getImageSrcset this use_default_sizes=true}}"
-                        data-image-gallery-zoom-image-url="{{getImageSrcset this (cdn ../theme_settings.default_image_product) 1x=../theme_settings.zoom_size}}"
-                    >
-                    {{> components/common/responsive-img
-                        image=this
-                        fallback_size=../theme_settings.productview_thumb_size
-                        lazyload=../theme_settings.lazyload_mode
-                    }}
-                    </a>
-                </li>
-            {{/each}}
-        </ul>
-    </section>
-
-    <section class="productView-details product-data">
-        <div class="productView-product">
-            <h1 class="productView-title">{{product.title}}</h1>
-            {{#if product.brand}}
-                <h2 class="productView-brand">
-                    <a href="{{product.brand.url}}"><span>{{product.brand.name}}</span></a>
-                </h2>
+            --}}
+            {{#if product.images.length '>' 1 }}
+            {{> components/carousel-content-announcement}}
             {{/if}}
-            {{#if product.call_for_price}}
-                <p class="productView-price">
-                    <span>{{product.call_for_price}}</span>
-                </p>
-            {{/if}}
-            <div class="productView-price">
-                {{#or customer (unless settings.hide_price_from_guests)}}
-                    {{> components/products/price price=product.price}}
-                {{else}}
-                    {{> components/common/login-for-pricing}}
-                {{/or}}
-            </div>
-            {{{region name="product_below_price"}}}
-            <div class="productView-rating">
-                {{#if settings.show_product_rating}}
-                    {{> components/products/ratings rating=product.rating}}
-                    {{#if product.num_reviews '>' 0}}
-                        <a href="{{product.url}}{{#if is_ajax}}#product-reviews{{/if}}" id="productReview_link">
-                            {{lang 'products.reviews.link_to_review' total=product.num_reviews}}
-                        </a>
-                    {{else}}
-                        <span>{{lang 'products.reviews.link_to_review' total=product.num_reviews}}</span>
-                    {{/if}}
-                {{/if}}
-                {{#if settings.show_product_reviews}}
-                    <a href="{{product.url}}{{#if is_ajax}}#write_review{{/if}}"
-                       class="productView-reviewLink productView-reviewLink--new"
-                       {{#unless is_ajax}}data-reveal-id="modal-review-form"{{/unless}}
-                       role="button"
-                    >
-                       {{lang 'products.reviews.new'}}
-                    </a>
-                    {{#unless is_ajax}}
-                        {{> components/products/modals/writeReview}}
-                    {{/unless}}
-                {{/if}}
-            </div>
-            {{product.detail_messages}}
-            <dl class="productView-info">
-                <dt class="productView-info-name sku-label"{{#unless product.sku}} style="display: none;"{{/unless}}>{{lang 'products.sku'}}</dt>
-                <dd class="productView-info-value" data-product-sku>{{product.sku}}</dd>
-                <dt class="productView-info-name upc-label"{{#unless product.upc}} style="display: none;"{{/unless}}>{{lang 'products.upc'}}</dt>
-                <dd class="productView-info-value" data-product-upc>{{product.upc}}</dd>
-                {{#if product.condition}}
-                    <dt class="productView-info-name">{{lang 'products.condition'}}</dt>
-                    <dd class="productView-info-value">{{product.condition}}</dd>
-                {{/if}}
-                {{#if product.availability}}
-                    <dt class="productView-info-name">{{lang 'products.availability'}}</dt>
-                    <dd class="productView-info-value">{{product.availability}}</dd>
-                {{/if}}
-                {{#all product.weight theme_settings.show_product_weight}}
-                    <dt class="productView-info-name">{{lang 'products.weight'}}</dt>
-                    <dd class="productView-info-value" data-product-weight>{{product.weight}}</dd>
-                {{/all}}
-                {{#all product.width product.height product.depth theme_settings.show_product_dimensions}}
-                    <dt class="productView-info-name">{{lang 'products.width'}}</dt>
-                    <dd class="productView-info-value" data-product-width>
-                        {{product.width}}
-                        {{#if settings.measurements.length '==' 'Centimeters'}}
-                        ({{lang 'products.measurement.metric'}})
-                        {{else}}
-                        ({{lang 'products.measurement.imperial'}})
-                        {{/if}}
-                    </dd>
-                    <dt class="productView-info-name">{{lang 'products.height'}}</dt>
-                    <dd class="productView-info-value" data-product-height>
-                        {{product.height}}
-                        {{#if settings.measurements.length '==' 'Centimeters'}}
-                        ({{lang 'products.measurement.metric'}})
-                        {{else}}
-                        ({{lang 'products.measurement.imperial'}})
-                        {{/if}}
-                    </dd>
-                    <dt class="productView-info-name">{{lang 'products.depth'}}</dt>
-                    <dd class="productView-info-value" data-product-depth>
-                        {{product.depth}}
-                        {{#if settings.measurements.length '==' 'Centimeters'}}
-                        ({{lang 'products.measurement.metric'}})
-                        {{else}}
-                        ({{lang 'products.measurement.imperial'}})
-                        {{/if}}
-                    </dd>
-                {{/all}}
-                {{#if product.min_purchase_quantity}}
-                    <dt class="productView-info-name">{{lang 'products.min_purchase_quantity'}}</dt>
-                    <dd class="productView-info-value">{{lang 'products.purchase_units' quantity=product.min_purchase_quantity}}</dd>
-                {{/if}}
-                {{#if product.max_purchase_quantity}}
-                    <dt class="productView-info-name">{{lang 'products.max_purchase_quantity'}}</dt>
-                    <dd class="productView-info-value">{{lang 'products.purchase_units' quantity=product.max_purchase_quantity}}</dd>
-                {{/if}}
-                {{#if product.gift_wrapping_available}}
-                    <dt class="productView-info-name">{{lang 'products.gift_wrapping'}}</dt>
-                    <dd class="productView-info-value">{{lang 'products.gift_wrapping_available'}}</dd>
-                {{/if}}
-                {{#if product.shipping}}
-                    {{#if product.shipping.calculated}}
-                        <dt class="productView-info-name">{{lang 'products.shipping'}}</dt>
-                        <dd class="productView-info-value">{{lang 'products.shipping_calculated'}}</dd>
-                    {{else}}
-                        {{#if product.shipping.price.value '===' 0}}
-                            <dt class="productView-info-name">{{lang 'products.shipping'}}</dt>
-                            <dd class="productView-info-value">{{lang 'products.shipping_free'}}</dd>
-                        {{else}}
-                            <dt class="productView-info-name">{{lang 'products.shipping'}}</dt>
-                            <dd class="productView-info-value">{{lang 'products.shipping_fixed' amount=product.shipping.price.formatted}}</dd>
-                        {{/if}}
-                    {{/if}}
-                {{/if}}
 
-                {{#if settings.bulk_discount_enabled}}
-                    <div class="productView-info-bulkPricing">
-                        {{> components/products/bulk-discount-rates bulk_discount_rates=product.bulk_discount_rates}}
+            <div class="productImage-wrapper">
+                <div class="subb-div1">
+                    {{#if product.images.length '>' 1 }}
+                    <div class="lightboxScroller">
+                        {{#each product.images}}
+                        {{assignVar "currentIndex" @index}}
+                        {{#if @index '<' 1}} {{else if @index '<' 3}} <a class="productThumbVisible" href="#"
+                            data-lightBox-index='{{@index}}'>
+                            <img class="lazyload" alt="{{alt}}"
+                                src="{{getImageSrcset this 1x=(default fallback_size '160w')}}">
+                            </a>
+                            {{else if @index '==' 3}}
+                            <a class="productThumbVisible productThumbLast" href="#" data-lightBox-index='{{@index}}'>
+                                <img class="lazyload" alt="{{alt}}"
+                                    src="{{getImageSrcset this 1x=(default fallback_size '160w')}}">
+                                <div class="thumbnailOverlay">
+                                    {{assignVar "imagesLength" ../product.images.length}}
+                                    <span class="thumbnailOverlayText" style="font-size: large;">View all images
+                                        +{{decrementVar
+                                        "imagesLength"}}</span>
+                                </div>
+                            </a>
+                            {{/if}}
+                            {{/each}}
                     </div>
-                {{/if}}
-
-                {{#if theme_settings.show_custom_fields_tabs '!==' true}}
-                    {{> components/products/custom-fields }}
-                {{/if}}
-            </dl>
-        </div>
-    </section>
-
-    <section class="productView-details product-options">
-        <div class="productView-options">
-            {{#if product.release_date }}
-                <p>{{product.release_date}}</p>
-            {{/if}}
-            <form class="form" method="post" action="{{product.cart_url}}" enctype="multipart/form-data"
-                  data-cart-item-add>
-                <input type="hidden" name="action" value="add">
-                <input type="hidden" name="product_id" value="{{product.id}}"/>
-                {{#if product.cart_order_source}}
-                    <input type="hidden" name="cart_order_source" value="{{product.cart_order_source}}"/>
-                {{/if}}
-                <div data-product-option-change style="display:none;">
-                    {{inject 'showSwatchNames' theme_settings.show_product_swatch_names}}
-                    {{#each product.options}}
-                        {{{dynamicComponent 'components/products/options'}}}
-                    {{/each}}
-                </div>
-                <div class="form-field form-field--stock{{#unless product.stock_level}} u-hiddenVisually{{/unless}}">
-                    <label class="form-label form-label--alternate">
-                        {{lang 'products.current_stock'}}
-                        <span data-product-stock>{{product.stock_level}}</span>
-                    </label>
-                </div>
-                {{> components/products/add-to-cart with_wallet_buttons=true}}
-                {{#if product.out_of_stock}}
-                    {{#if product.out_of_stock_message}}
-                        {{> components/common/alert/alert-error product.out_of_stock_message}}
-                    {{else}}
-                        {{> components/common/alert/alert-error (lang 'products.sold_out')}}
                     {{/if}}
-                {{/if}}
-            </form>
-            {{#if settings.show_wishlist}}
-                {{> components/common/wishlist-dropdown}}
-            {{/if}}
-        </div>
-        {{> components/common/share url=product.url}}
-    </section>
+                </div>
+                <div class="productHero">
+                    <div class="splide">
+                        <div class="hover-hitbox">
+                            <div class="expand-image-wrapper">
+                                <div class="expand">
 
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card-promo-container">
+                            {{#filter product.custom_fields 'promotionText' property='name'}}
+                            {{#if value "!=" "NA"}}
+                            <p class="card-promotionText">{{value}}</p>
+                            {{/if}}
+                            {{/filter}}
+                        </div>
+                        <div class="splide__track">
+                            <ul class="splide__list">
+                                {{#each product.images}}
+                                <li class="splide__slide">
+                                    <a class="productThumbVisible" data-fslightbox
+                                        href="{{getImageSrcset this 1x=(default fallback_size '1200w')}}"
+                                        data-lightbox-index="{{@index}}">
+                                        <img data-splide-lazy-srcset="{{getImageSrcset this 1x=(default fallback_size '580w') }} 700w, {{getImageSrcset this 1x=(default fallback_size '600w') }} 980w"
+                                            sizes="(min-width: 1800px) 580px, (min-width: 1300px) 580px, (min-width: 767px) calc(80vw - 317px)"
+                                            data-splide-lazy="{{getImageSrcset this 1x=(default fallback_size '600w') }}"
+                                            style="aspect-ratio: 0.98 / 1;" alt="product-thum">
+                                    </a>
+                                </li>
+                                {{/each}}
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <div class="subb-div3">
+        <section class="productView-details product-data">
+            <div class="productView-product">
+                <div class="product-title-main">
+                    <a class="no-outline-focus"
+                        href="https://medcart.com.au/your-discount-chemist-pty-ltd-52"><span>Your Discount Chemist
+                            Pty
+                            Ltd</span></a>
+                    <h1 class="productView-title">{{product.title}}</h1>
+                    <!-- {{#if product.brand}}
+                    <h2 class="productView-brand">
+                        <a href="{{product.brand.url}}"><span>{{product.brand.name}}</span></a>
+                    </h2>
+                {{/if}} -->
+                    {{#if product.call_for_price}}
+                    <p class="productView-price">
+                        <span>{{product.call_for_price}}</span>
+                    </p>
+                {{/if}}
+                    <div class="wishlist-icon">
+                        {{#if settings.show_wishlist}}
+                        {{> components/common/wishlist-dropdown}}
+                        <!-- <p class="wishlist-icon product-card-wishlist" data-product-id="{{product.id}}"><i class="fa-regular fa-heart"></i></p> -->
+
+                        {{/if}}
+                    </div>
+                </div>
+
+                <div class="allprice-combine">
+                    <div class="productView-price">
+                        {{#or customer (unless settings.hide_price_from_guests)}}
+                        {{> components/products/price price=product.price}}
+                        {{else}}
+                        {{> components/common/login-for-pricing}}
+                        {{/or}}
+                    </div>
+                    <div class="offer-price">
+                        <span>29% Off</span>
+                    </div>
+                </div>
+                <div class="afterpay-paragraph">
+                    <span class="afterpay-main-text">
+                        or 4 interest-free payments of $19.59 with
+                    </span><br>
+                    <span class="afterpay-logo-link afterlogo"><button
+                            class="afterpay-logo brand-afterpay type-badge black-on-mint"
+                            aria-label="Afterpay logo - Opens a dialog" title="Afterpay logo - Opens a dialog"><svg
+                                xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid meet" width="104"
+                                height="36" viewBox="0 0 104 36">
+                                <path class="afterpay-logo-badge-background" fill="#b2fce4"
+                                    d="m86.00173,35.9321l-68.00064,0c-9.90375,0 -17.93101,-8.02726 -17.93101,-17.93101l0,0c0,-9.90375 8.02726,-17.93101 17.93101,-17.93101l68.00064,0c9.90375,0 17.931,8.02726 17.931,17.93101l0,0c0.00652,9.89724 -8.02725,17.93101 -17.931,17.93101z">
+                                </path>
+                                <g class="afterpay-logo-badge-lockup">
+                                    <path
+                                        d="m88.23074,13.52071l-2.25928,-1.29288l-2.29193,-1.31247c-1.51489,-0.86845 -3.40851,0.22201 -3.40851,1.97197l0,0.29384c0,0.16324 0.08489,0.31342 0.22854,0.39178l1.06435,0.60726c0.29383,0.16978 0.6595,-0.0457 0.6595,-0.38525l0,-0.69868c0,-0.34607 0.37219,-0.56155 0.67256,-0.39178l2.0895,1.20147l2.08298,1.19493c0.30037,0.16977 0.30037,0.60727 0,0.77704l-2.08298,1.19494l-2.0895,1.20146c-0.30037,0.16978 -0.67256,-0.0457 -0.67256,-0.39178l0,-0.34607c0,-1.74997 -1.89362,-2.84696 -3.40851,-1.97198l-2.29193,1.31247l-2.25928,1.29289c-1.52142,0.87498 -1.52142,3.07549 0,3.95047l2.25928,1.29289l2.29193,1.31247c1.51489,0.86845 3.40851,-0.22201 3.40851,-1.97198l0,-0.29383c0,-0.16325 -0.08489,-0.31343 -0.22854,-0.39179l-1.06435,-0.60726c-0.29383,-0.16977 -0.6595,0.04571 -0.6595,0.38525l0,0.69868c0,0.34608 -0.37219,0.56156 -0.67256,0.39179l-2.0895,-1.20147l-2.08298,-1.19494c-0.30037,-0.16977 -0.30037,-0.60726 0,-0.77703l2.08298,-1.19494l2.0895,-1.20147c0.30037,-0.16977 0.67256,0.04571 0.67256,0.39179l0,0.34607c0,1.74996 1.89362,2.84695 3.40851,1.97197l2.29193,-1.31247l2.25928,-1.29288c1.52142,-0.88151 1.52142,-3.0755 0,-3.95048z">
+                                    </path>
+                                    <path
+                                        d="m73.4083,13.95167l-5.28907,10.92421l-2.19398,0l1.9785,-4.08107l-3.11467,-6.84314l2.25275,0l1.99809,4.58386l2.18092,-4.58386l2.18746,0z">
+                                    </path>
+                                    <path
+                                        d="m20.52416,17.83032c0,-1.30594 -0.9468,-2.2201 -2.10909,-2.2201s-2.1091,0.93375 -2.1091,2.2201c0,1.2733 0.94681,2.2201 2.1091,2.2201s2.10909,-0.91416 2.10909,-2.2201m0.01959,3.87865l0,-1.00558c-0.57461,0.69868 -1.43,1.12964 -2.44864,1.12964c-2.12869,0 -3.74152,-1.70425 -3.74152,-4.00271c0,-2.27887 1.67813,-4.01577 3.78723,-4.01577c0.99251,0 1.82832,0.43749 2.40293,1.11658l0,-0.97946l1.90668,0l0,7.7573l-1.90668,0z">
+                                    </path>
+                                    <path
+                                        d="m31.72262,19.98513c-0.66603,0 -0.85539,-0.24813 -0.85539,-0.9011l0,-3.44116l1.22758,0l0,-1.6912l-1.22758,0l0,-1.89361l-1.95239,0l0,1.89361l-2.52047,0l0,-0.7705c0,-0.65297 0.24813,-0.9011 0.93375,-0.9011l0.43096,0l0,-1.50184l-0.94027,0c-1.61284,0 -2.37682,0.52891 -2.37682,2.14175l0,1.03822l-1.08393,0l0,1.68467l1.08393,0l0,6.0661l1.95238,0l0,-6.0661l2.52047,0l0,3.80029c0,1.58019 0.60727,2.26581 2.18746,2.26581l1.00557,0l0,-1.72384l-0.38525,0z">
+                                    </path>
+                                    <path
+                                        d="m38.73553,17.13164c-0.13713,-1.00557 -0.95987,-1.61284 -1.92627,-1.61284c-0.95986,0 -1.75649,0.58768 -1.95238,1.61284l3.87865,0zm-3.89824,1.208c0.13712,1.14923 0.95987,1.8022 2.00462,1.8022c0.82275,0 1.45613,-0.38525 1.82832,-1.00558l2.00462,0c-0.46361,1.64549 -1.93932,2.69677 -3.87865,2.69677c-2.34416,0 -3.98965,-1.64548 -3.98965,-3.98965c0,-2.34417 1.7369,-4.03536 4.03536,-4.03536c2.31152,0 3.98965,1.70425 3.98965,4.03536c0,0.16977 -0.01305,0.33955 -0.0457,0.49626l-5.94857,0z">
+                                    </path>
+                                    <path
+                                        d="m53.26414,17.83032c0,-1.2537 -0.94681,-2.2201 -2.1091,-2.2201c-1.16229,0 -2.1091,0.93375 -2.1091,2.2201c0,1.2733 0.94681,2.2201 2.1091,2.2201c1.16229,0 2.1091,-0.95986 2.1091,-2.2201m-6.14446,7.04556l0,-10.92421l1.90667,0l0,1.00558c0.57462,-0.71174 1.43001,-1.14923 2.44865,-1.14923c2.09603,0 3.74152,1.72384 3.74152,4.00271s-1.67814,4.01578 -3.78723,4.01578c-0.97946,0 -1.78261,-0.38526 -2.34417,-1.03823l0,4.08107l-1.96544,0l0,0.00653z">
+                                    </path>
+                                    <path
+                                        d="m62.09231,17.83032c0,-1.30594 -0.94681,-2.2201 -2.1091,-2.2201c-1.16229,0 -2.1091,0.93375 -2.1091,2.2201c0,1.2733 0.94681,2.2201 2.1091,2.2201c1.16229,0 2.1091,-0.91416 2.1091,-2.2201m0.01959,3.87865l0,-1.00558c-0.57462,0.69868 -1.43001,1.12964 -2.44865,1.12964c-2.12868,0 -3.74152,-1.70425 -3.74152,-4.00271c0,-2.27887 1.67813,-4.01577 3.78723,-4.01577c0.99252,0 1.82832,0.43749 2.40294,1.11658l0,-0.97946l1.90667,0l0,7.7573l-1.90667,0z">
+                                    </path>
+                                    <path
+                                        d="m43.67852,14.70912s0.4832,-0.9011 1.67814,-0.9011c0.50931,0 0.8358,0.1763 0.8358,0.1763l0,1.97851s-0.71827,-0.44402 -1.37777,-0.35261c-0.6595,0.09142 -1.0774,0.69215 -1.0774,1.50184l0,4.59038l-1.97197,0l0,-7.75076l1.90667,0l0,0.75744l0.00653,0z">
+                                    </path>
+                                </g>
+                            </svg></button> <button id="logo-link" class="afterpay-link" tabindex="0"
+                            aria-label="Learn More about Afterpay - Opens a dialog"
+                            title="Learn More about Afterpay - Opens a dialog"><template
+                                style="text-decoration: none; display: inline-block;"></template></button></span>
+                    </span>
+                </div>
+
+        </section>
+
+        <section class="productView-details product-options">
+            <div class="productView-options">
+                {{#if product.release_date }}
+                <p>{{product.release_date}}</p>
+                {{/if}}
+                <form class="form" method="post" action="{{product.cart_url}}" enctype="multipart/form-data"
+                    data-cart-item-add>
+
+                    {{> components/products/add-to-cart with_wallet_buttons=true}}
+                    {{#if product.out_of_stock}}
+                    {{#if product.out_of_stock_message}}
+                    {{> components/common/alert/alert-error product.out_of_stock_message}}
+                    {{else}}
+                    {{> components/common/alert/alert-error (lang 'products.sold_out')}}
+                    {{/if}}
+                    {{/if}}
+                </form>
+            </div>
+            <!-- {{> components/common/share url=product.url}} -->
+        </section>
+        <div class="bottom-desc">
+            <h4>Shop all Versace products</h3>
+        </div>
+    </div>
+</div>
+
+<section class="productView-bottom">
     <article class="productView-description">
-        {{#if theme_settings.show_product_details_tabs}}
-            {{> components/products/description-tabs}}
-        {{else}}
-            {{> components/products/description}}
-        {{/if}}
+    {{#if theme_settings.show_product_details_tabs}}
+    {{> components/products/description-tabs}}
+    {{else}}
+    {{> components/products/description}}
+    {{/if}}
+    
+    <div class="policies-container">
+        <h2>Seller Policies</h2>
+        <button class="view-policies" id="product-brandPolicyTrig">View Policies</button>
+        {{> components/common/seller-policy}}
+    </div>
     </article>
+     
+
+</section>
+
 </div>
 
 <div id="previewModal" class="modal modal--large" data-reveal>

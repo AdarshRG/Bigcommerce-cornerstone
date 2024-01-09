@@ -6,33 +6,39 @@ cart: true
 {{inject 'invalidEntryMessage' (lang 'cart.invalid_entry_message')}}
 <div class="page">
 
-    <div class="page-content" data-cart>
-        {{> components/common/breadcrumbs breadcrumbs=breadcrumbs}}
+
+    <!-- {{> components/common/breadcrumbs breadcrumbs=breadcrumbs}}
 
         {{> components/cart/page-title}}
 
         <div data-cart-status>
             {{> components/cart/status-messages}}
-        </div>
+        </div> -->
+    <h1 style="font-weight: 500; font-family: Inter,Arial,Helvetica,sans-serif; ;">Shopping Cart contains 1 item
+        </h2>
+        <h4 class="haveacnt" style="font-family: Inter,Arial,Helvetica,sans-serif;">Have an account? <a
+                href="/login.php" class="sign-in-from-cart"> <strong>Sign in</strong> </a> in or <a
+                href="/login.php?action=create_account" class="join-in-from-cart"><strong>Create an
+                    Account</strong></a> for a fast and easy checkout.</h4>
+        <div class="page-content" >
+            {{#if cart.items.length}}
 
-        {{#if cart.items.length}}
             <div class="loadingOverlay"></div>
 
-            <div data-cart-content class="cart-content-padding-right">
+            <div data-cart-content class="cart-content-padding-right cart-page-left">
                 {{> components/cart/content}}
             </div>
 
-            <div data-cart-totals class="cart-content-padding-right">
+            <div data-cart-totals class="cart-content-padding-right cart-page-right ">
                 {{> components/cart/totals}}
             </div>
-
             {{{region name="cart_below_totals"}}}
 
             {{#or customer (unless settings.hide_price_from_guests)}}
-                {{#if cart.show_primary_checkout_button}}
-                    <div class="cart-actions cart-content-padding-right">
+            {{#if cart.show_primary_checkout_button}}
+            <!-- <div class="cart-actions cart-content-padding-right">
                         <a
-                            class="button button--primary"
+                            class="button button--primary cartbtn"
                             href="{{urls.checkout.single_address}}"
                             title="{{lang 'cart.checkout.title'}}"
                             data-primary-checkout-now-action
@@ -44,29 +50,30 @@ cart: true
                                 {{lang 'cart.preview.checkout_multiple'}}
                             </a>
                         {{/if}}
-                    </div>
-                {{else}}
-                    <div class="cart-actions cart-content-padding-right">
-                        <a class="button" href="{{urls.home}}" title="{{lang 'cart.continue_shopping'}}">{{lang 'cart.continue_shopping'}}</a>
-                    </div>
-                {{/if}}
-
-                {{#if cart.additional_checkout_buttons}}
-                    <div data-cart-additional-checkout-buttons class="cart-additionalCheckoutButtons cart-content-padding-right">
-                        {{> components/cart/additional-checkout-buttons}}
-                    </div>
-                {{/if}}
+                    </div> -->
             {{else}}
-                <div class="cart-actions cart-content-padding-right">
-                    <a class="button" href="{{urls.auth.login}}" title="{{lang 'cart.login_to_checkout'}}">{{lang 'cart.login_to_checkout'}}</a>
-                </div>
+            <div class="cart-actions cart-content-padding-right">
+                <a class="button" href="{{urls.home}}" title="{{lang 'cart.continue_shopping'}}">{{lang
+                    'cart.continue_shopping'}}</a>
+            </div>
+            {{/if}}
+
+            {{#if cart.additional_checkout_buttons}}
+            <div data-cart-additional-checkout-buttons
+                class="cart-additionalCheckoutButtons cart-content-padding-right">
+                {{> components/cart/additional-checkout-buttons}}
+            </div>
+            {{/if}}
+            {{else}}
+            <div class="cart-actions cart-content-padding-right">
+                <a class="button" href="{{urls.auth.login}}" title="{{lang 'cart.login_to_checkout'}}">{{lang
+                    'cart.login_to_checkout'}}</a>
+            </div>
             {{/or}}
-
-        {{else}}
+            {{else}}
             <h3 tabindex="0">{{lang 'cart.checkout.empty_cart'}}</h3>
-        {{/if}}
-
-    </div>
+            {{/if}}
+        </div>
 </div>
 {{/partial}}
 {{> layout/base}}

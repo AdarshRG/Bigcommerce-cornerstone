@@ -1,4 +1,5 @@
-<main class="body" id="main-content" role="main" data-currency-code="{{currency_selector.active_currency_code}}">
+<main class="body {{#contains template 'product-view'}}wishlist-btn{{/contains}}" 
+id="main-content" role="main" data-currency-code="{{currency_selector.active_currency_code}}">
     {{#block "hero"}} {{/block}}
     <div class="container">
         {{#block "page"}} {{/block}}

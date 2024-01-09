@@ -19,9 +19,15 @@ export default class Cart extends PageManager {
             .hide(); // TODO: temporary until roper pulls in his cart components
         this.$activeCartItemId = null;
         this.$activeCartItemBtnAction = null;
-
+        this.accordian();
+        this.totalCalc();
+        this.cartGroup();
         this.setApplePaySupport();
         this.bindEvents();
+        utils.api.cart.getCart({}, (err, response) => {
+            console.log(response);
+            console.log(err);
+          });
     }
 
     setApplePaySupport() {
@@ -212,7 +218,7 @@ export default class Cart extends PageManager {
             this.$cartTotals.html(response.totals);
             this.$cartMessages.html(response.statusMessages);
             this.$cartAdditionalCheckoutBtns.html(response.additionalCheckoutButtons);
-
+            this.totalCalc();
             $cartPageTitle.replaceWith(response.pageTitle);
 
             const quantity = $('[data-cart-quantity]', this.$cartContent).data('cartQuantity') || 0;
@@ -223,9 +229,8 @@ export default class Cart extends PageManager {
 
             this.bindEvents();
             this.$overlay.hide();
-
+            
             $('body').trigger('cart-quantity-update', quantity);
-
             $(`[data-cart-itemid='${this.$activeCartItemId}']`, this.$cartContent)
                 .filter(`[data-action='${this.$activeCartItemBtnAction}']`)
                 .trigger('focus');
@@ -441,4 +446,123 @@ export default class Cart extends PageManager {
         };
         this.shippingEstimator = new ShippingEstimator($('[data-shipping-estimator]'), shippingErrorMessages);
     }
+    totalCalc(){
+
+        let items = $('.cart-total');
+        let grandTotal = 0;
+        let shipping = parseInt($('#shipping-total span').text()) || 0; 
+
+        items.each(function () {
+        let itemTotal = parseFloat($(this).find('#cart-total-value span').text().replace(/[$,]/g, '').trim()) || 0;
+        grandTotal += itemTotal;
+        });
+
+        let checkout = "$" + (grandTotal + shipping).toFixed(2);
+
+        $('#checkout-value').text(checkout);
+        $('.checkoutfinal').text(checkout);
+        // $('.mcart-total').text(checkout);
+
+
+        console.log(checkout);
+    }
+    accordian(){
+        var acc = document.getElementsByClassName("accordion");
+        var i;
+        
+        for (i = 0; i < acc.length; i++) {
+        acc[i].addEventListener("click", function() {
+        this.classList.toggle("active");
+        var panel = this.nextElementSibling;
+        if (panel.style.maxHeight) {
+          panel.style.maxHeight = null;
+        } else {
+          panel.style.maxHeight = panel.scrollHeight + "px";
+        } 
+        });
+        }
+    }
+
+
+
+
+    cartGroup() {
+
+    // Handle promo code clicks
+    $('.promo-code h4').on('click', event => {
+        $('.promo-code h4').toggleClass("is-open")
+        const $couponContainer = $('.coupon-code');
+        $couponContainer.toggle();
+    });
+
+    // Find all the cart items
+    let items = $('.cart-item-container');
+
+    // Create an object to store the grouped items and brand totals
+    let groupedItems = {};
+
+    // Iterate over each item
+    items.each(function () {
+
+        // Get the brand of the item
+        let brand = $(this).data('brand');
+
+        // If the brand doesn't exist in the groupedItems object yet, create a new array for it
+        if (!groupedItems[brand]) {
+            groupedItems[brand] = {
+                lineItems: [],
+                shippingContainer: $(this).find('.shipping-container').detach(),
+                individualTotal: $(this).find('.cart-individual-total').detach(),
+            };
+        }
+
+        // Add the current item's line-item to the array for the brand
+        groupedItems[brand].lineItems.push($(this).find('.line-item'));
+
+    });
+
+    // Create a new container for the grouped items
+    let newContainer = $('<div class="cart-container"></div>');
+
+    // Iterate over the grouped items and create a new cart item container for each brand
+    for (let brand in groupedItems) {
+        let newItemContainer = $('<div class="cart-item-container" data-brand="' + brand + '"></div>');
+        let brandTotal = 0;
+        let gst = 0;
+        let indvTotal = 0;
+        $(groupedItems[brand].lineItems).each(function () {
+            let price = parseFloat($(this).find('.product-price-normal').text().replace('$', '')); // Get the price of the current line item
+            brandTotal += price;
+            gst = 0.1 * brandTotal;
+
+        });
+        // Set the sub-total value for the current brand's individualTotal container
+        let subTotal = groupedItems[brand].individualTotal.find('.sub-total');
+        let gstTotal = groupedItems[brand].individualTotal.find('.gst');
+        let shippingTotal = groupedItems[brand].individualTotal.find('.indv-total');
+        let shipping = parseFloat(groupedItems[brand].individualTotal.find('.shipping').text().replace('$', ''));
+
+
+        indvTotal = shipping + brandTotal;
+
+
+        subTotal.text('$' + brandTotal.toFixed(2)); // Format the total as a currency value and set it as the text of the sub-total element
+        gstTotal.text('$' + gst.toFixed(2));
+        shippingTotal.text('$' + indvTotal.toFixed(2));
+
+        newItemContainer.append(groupedItems[brand].lineItems);
+        newItemContainer.append(groupedItems[brand].shippingContainer);
+        newItemContainer.append(groupedItems[brand].individualTotal);
+        newContainer.append(newItemContainer);
+    }
+
+    // Replace the original cart container with the new one
+    $('.cart-container').replaceWith(newContainer);
+    }
+
+
+
+    
 }
+
+

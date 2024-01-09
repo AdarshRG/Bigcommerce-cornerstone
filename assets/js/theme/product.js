@@ -8,6 +8,8 @@ import ProductDetails from './common/product-details';
 import videoGallery from './product/video-gallery';
 import { classifyForm } from './common/utils/form-utils';
 import modalFactory from './global/modal';
+import 'fslightbox';
+import Splide from '@splidejs/splide';
 
 export default class Product extends PageManager {
     constructor(context) {
@@ -19,6 +21,42 @@ export default class Product extends PageManager {
     }
 
     onReady() {
+        // Listen for foundation modal close events to sanitize URL after review.
+        $(document).on('close.fndtn.reveal', () => {
+            if (this.url.indexOf('#write_review') !== -1 && typeof window.history.replaceState === 'function') {
+                window.history.replaceState(null, document.title, window.location.pathname);
+            }  
+          
+        });
+
+
+        //fslightbox package working..............................
+
+        $('.productThumbVisible').on('click', function(){
+            fsLightbox.open(parseInt($(this).attr('data-lightBox-index')));
+        });
+        new Splide('.splide', {
+            lazyLoad: 'nearby',
+            breakpoints: {
+                960: {
+                    fixedHeight: '380px',
+                },
+                9999999: {
+                    fixedHeight: '610px',
+                },
+            }
+        }
+        ).mount();
+        // const storefrontAPIToken = this.context.storefrontAPIToken;
+        // this.populateMetafieldContent(storefrontAPIToken);
+
+        
+
+        // Add onclick for thumbnails 
+        $('.productThumbVisible').on('click', function () {
+            fsLightbox.open(parseInt($(this).attr('data-lightBox-index')));
+        });
+
         // Listen for foundation modal close events to sanitize URL after review.
         $(document).on('close.fndtn.reveal', () => {
             if (this.url.indexOf('#write_review') !== -1 && typeof window.history.replaceState === 'function') {
@@ -61,6 +99,8 @@ export default class Product extends PageManager {
         this.productReviewHandler();
     }
 
+    
+    
     ariaDescribeReviewInputs($form) {
         $form.find('[data-input]').each((_, input) => {
             const $input = $(input);
@@ -82,4 +122,35 @@ export default class Product extends PageManager {
             this.$bulkPricingLink.trigger('click');
         }
     }
+
+  
 }
+
+document.getElementById('showMoreButton').addEventListener('click', function () {
+    var tabsContents = document.getElementById('tabs-contents');
+    tabsContents.classList.toggle('expanded');
+    var buttonText = tabsContents.classList.contains('expanded') ? 'Show less' : 'Show more';
+    this.innerText = buttonText;
+});
+
+
+
+
+$('#product-brandPolicyTrig').click(function(event){
+    event.preventDefault()
+       $('#brandPolicy-Modal-backdrop').css('display','block');
+       $('body').addClass('prevent-scroll');
+
+    });
+
+$(document).on('click','#brandPolicy-Modal-backdrop',function(){
+    if($('#brandPolicy-Modal-backdrop').css('display') == "block"){
+        $('#brandPolicy-Modal-backdrop').css('display','none');
+        $('body').removeClass('prevent-scroll');
+    }else{
+        $('#brandPolicy-Modal-backdrop').css('display','block'); 
+        $('body').addClass('prevent-scroll');
+    }
+});
+
+

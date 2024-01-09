@@ -1,89 +1,154 @@
 <div class="previewCartWrapper">
-  <div class="previewCart">
-    {{#if cart.items.length}}
+    <div class="your-cart">
+        <p>YOUR CART</p>
+        <p id="cart-close">close ✕
+        </p>
+    </div>
+    <div class="previewCart">
+        <div class="brand-name">Delivered By Your Discount Chemist Pty Ltd</div>
+        {{#if cart.items.length}}
         <ul class="previewCartList">
             {{#each (limit cart.items 4)}}
-                <li class="previewCartItem">
-                    <div class="previewCartItem-image">
-                        {{#if type '==' 'GiftCertificate'}}
-                            <img
-                                alt="GiftCertificate"
-                                title="GiftCertificate"
-                                src="{{cdn ../theme_settings.default_image_gift_certificate}}"
-                            >
-                        {{else}}
-                            {{> components/common/responsive-img
-                                image=image
-                                fallback_size=../theme_settings.productthumb_size
-                                lazyload=../theme_settings.lazyload_mode
-                                default_image=../theme_settings.default_image_product
-                            }}
-                        {{/if}}
-                    </div>
-                        <div class="previewCartItem-content">
-                            <span class="previewCartItem-brand">
-                                {{brand.name}}
-                            </span>
+            <li class="previewCartItem">
+                <div class="previewCartItem-image">
+                    {{#if type '==' 'GiftCertificate'}}
+                    <img alt="GiftCertificate" title="GiftCertificate"
+                        src="{{cdn ../theme_settings.default_image_gift_certificate}}">
+                    {{else}}
+                    {{> components/common/responsive-img
+                    image=image
+                    fallback_size=../theme_settings.productthumb_size
+                    lazyload=../theme_settings.lazyload_mode
+                    default_image=../theme_settings.default_image_product
+                    }}
+                    {{/if}}
+                </div>
+                <div class="previewCartItem-content">
+                    <!-- <span class="previewCartItem-brand">
+                        {{brand.name}}
+                    </span> -->
 
-                            <h6 class="previewCartItem-name">
-                                <a href="{{url}}" alt="{{name}}" title="{{name}}">{{name}}</a>
-                            </h6>
+                    <h5 class="previewCartItem-name">
+                        <a href="{{url}}" alt="{{name}}" title="{{name}}">{{name}}</a>
+                    </h5>
 
-                            <span class="previewCartItem-price">
-                                {{#if quantity '>' 1}}
-                                    {{quantity}} &times;
-                                {{/if}}
-                                {{#or ../customer (unless ../settings.hide_price_from_guests) (if type '==' 'GiftCertificate')}}
-                                    <span{{#if price_discounted}} class="price--discounted"{{/if}}>{{price.formatted}}</span>
-                                    {{#if price_discounted}}
-                                        {{price_discounted.formatted}}
-                                    {{/if}}
-                                {{else}}
-                                    {{> components/common/login-for-pricing}}
-                                {{/or}}
-                            </span>
+
+                    <div class="previewCartItem-price">
+                        {{#if quantity }}
+                        <div class="qty-container" data-cart-itemId="{{id}}" data-cart-productId="{{product_id}}">
+                            Qty: <button class="cart-increment" data-action="inc">+</button>
+                            <span class="cart-qty" data-quantity-min="{{min_purchase_quantity}}"
+                                data-quantity-max="{{max_purchase_quantity}}"
+                                data-quantity-min-error="{{lang 'products.quantity_min' quantity=min_purchase_quantity}}"
+                                data-quantity-max-error="{{lang 'products.quantity_max' quantity=max_purchase_quantity}}">{{quantity}}</span>
+                            <button class="cart-decrement" data-action="dec">-</button>
                         </div>
-                    </li>
-                {{/each}}
-            </ul>
-            <div class="previewCartAction">
-                {{#if cart.show_primary_checkout_button}}
-                    <div class="previewCartAction-checkout">
-                        <a
-                                href="{{urls.checkout.single_address}}"
-                                class="button button--small button--primary"
-                                data-primary-checkout-now-action
-                        >
-                            {{lang 'cart.preview.checkout_now'}}
-                        </a>
+                        {{/if}}
+                        <div class="item-close">
+                            {{#or can_modify (if type '==' 'GiftCertificate')}}
+                            <button class="cart-remove cart-close-icon close-icon" data-cart-itemid="{{id}}"
+                                data-confirm-delete="{{lang 'cart.confirm_delete'}}"
+                                aria-label="{{lang 'cart.remove_item' name=name}}">
+                             X
+                            </button>
+                            {{/or}}
+                        </div>
                     </div>
-                {{/if}}
+                    <span class="the-dom-price">
+                        {{#if price_discounted}}
+                        ${{toFixed (multiply price_discounted.value quantity) 2}}
+                        {{else}}
+                        ${{toFixed (multiply price.value quantity) 2}}
+                        {{/if}}
+                    </span>
+                    <span class="price-normal">{{price.formatted}}</span>
 
-                <div class="previewCartAction-viewCart{{#unless cart.show_primary_checkout_button}} previewCartAction-viewCart--sole{{/unless}}">
+                    <!-- <div class="price-container">
+                        <span>
+                            {{#or ../customer (unless ../settings.hide_price_from_guests) (if type '=='
+                            'GiftCertificate')}}
+                           
+
+                            <span class="non-sale-price-{{@index}}"></span>
+
+                           
+
+                            {{else}}
+                            {{> components/common/login-for-pricing}}
+                            {{/or}}
+
+                        </span>
+                    </div> -->
+                </div>
+             </li>
+    {{/each}}
+    </ul>
+
+    <!-- subtotals and sum etc ...........-->
+    {{#if cart.items.length}}
+    {{#each cart.gift_certificates}}
+    <input type="hidden" name="minCartCouponCodeValue" value="{{ used.value }}">
+    {{/each}}
+    <div class="cart-footer">
+        <div class="total-div">
+            <div class="mcart-flex" id="mcart-flex" >
+                <p>Subtotal:</p>
+                <p class="sub-total">{{cart.sub_total.formatted}}</p>
+            </div>
+            <div class="mcart-flex" id="shipping-total">
+                <p>Shipping:</p>
+                <p class="mcart-shipping">$15</p>
+            </div>
+            <div class="mcart-flex">
+                <p>Total:</p>
+                <p class="mcart-total"></p>
+            </div>
+            <div class="mcart-flex cart-saving">
+                <p class="color-green-bold">You Save:</p>
+                <p class="currency-symbol saving-total color-green-bold">$0</p>
+            </div>
+        </div>
+        <div class="previewCartAction">
+            {{#if cart.show_primary_checkout_button}}
+            <div class="previewCartAction-checkout">
+                <a href="{{urls.checkout.single_address}}" class="button button--small button--primary"
+                    data-primary-checkout-now-action>
+                    Checkout
+                </a>
+            </div>
+            {{/if}}
+        </div>
+    </div>
+    {{/if}}
+
+
+
+
+    <!-- <div class="previewCartAction-viewCart{{#unless cart.show_primary_checkout_button}} previewCartAction-viewCart--sole{{/unless}}">
                     <a href="{{urls.cart}}" class="button button--small button--action">
                         {{lang 'cart.preview.view_cart'}}
                     </a>
-                </div>
+                </div> -->
 
-                {{#if cart.show_multiple_address_shipping}}
-                    <div class="previewCartAction-checkoutMultiple">
-                        <a href="{{urls.checkout.multiple_address}}">
-                            {{lang 'cart.preview.checkout_multiple'}}
-                        </a>
-                    </div>
-                {{/if}}
-            </div>
-            {{#if cart.additional_checkout_buttons}}
-                <div class="previewCart-additionalCheckoutButtons">
-                    {{#each cart.additional_checkout_buttons}}
-                        {{{this}}}
-                    {{/each}}
-                </div>
-            {{/if}}
-        {{else}}
-            <div role="alert" aria-live="polite" aria-atomic="false" class="previewCart-emptyBody">
-                {{lang 'cart.checkout.empty_cart'}}
-            </div>
-        {{/if}}
+    {{#if cart.show_multiple_address_shipping}}
+    <div class="previewCartAction-checkoutMultiple">
+        <a href="{{urls.checkout.multiple_address}}">
+            {{lang 'cart.preview.checkout_multiple'}}
+        </a>
     </div>
+    {{/if}}
+</div>
+{{#if cart.additional_checkout_buttons}}
+<div class="previewCart-additionalCheckoutButtons">
+    {{#each cart.additional_checkout_buttons}}
+    {{{this}}}
+    {{/each}}
+</div>
+{{/if}}
+{{else}}
+<div role="alert" aria-live="polite" aria-atomic="false" class="previewCart-emptyBody">
+    {{lang 'cart.checkout.empty_cart'}}
+</div>
+{{/if}}
+</div>
 </div>

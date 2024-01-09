@@ -1,13 +1,16 @@
 {{#if children}}
-<a class="navPages-action has-subMenu{{#if is_active}} activePage{{/if}}"
+<a class="navPages-action has-subMenu{{#if is_active}} activePage{{/if}}" 
    href="{{url}}"
-   data-collapsible="navPages-{{id}}"
->
+   data-collapsible="navPages-{{id}}">
     {{name}}
     <i class="icon navPages-action-moreIcon" aria-hidden="true">
-        <svg><use href="#icon-chevron-down" /></svg>
+        <svg class="chevron-svg">
+            <use xlink:href="#icon-chevron-down" fill="black" />
+        </svg>
     </i>
-</a>
+    
+ </a>
+
 <div class="navPage-subMenu" id="navPages-{{id}}" aria-hidden="true" tabindex="-1">
     <ul class="navPage-subMenu-list">
         <li class="navPage-subMenu-item">
@@ -20,8 +23,10 @@
         </li>
         {{#each children}}
             <li class="navPage-subMenu-item">
+                
                 {{#if children}}
-                    <a class="navPage-subMenu-action navPages-action has-subMenu{{#if is_active}} activePage{{/if}}"
+                    <a class="navPage-subMenu-action navPages-action has-subMenuu{{#if is_active}} activePage{{/if}}"
+                    id="navPage-subMenu-action"
                        href="{{url}}"
                        aria-label="{{name}}"
                     >
@@ -32,9 +37,11 @@
                             data-collapsible-disabled-state="open"
                             data-collapsible-enabled-state="closed"
                         >
-                            <i class="icon navPages-action-moreIcon" aria-hidden="true">
-                                <svg><use href="#icon-chevron-down" /></svg>
-                            </i>
+                        <i class="icon navPages-action-moreIcon" aria-hidden="true">
+                            <svg class="chevron-svg">
+                                <use xlink:href="#icon-chevron-down" fill="black" />
+                            </svg>
+                        </i>
                         </span>
                     </a>
                     <ul class="navPage-childList" id="navPages-{{id}}">
@@ -62,10 +69,10 @@
     </ul>
 </div>
 {{else}}
-<a class="navPages-action{{#if is_active}} activePage{{/if}}"
+<!-- <a class="navPages-action{{#if is_active}} activePage{{/if}}"
    href="{{url}}"
    aria-label="{{name}}"
 >
     {{name}}
-</a>
+</a> -->
 {{/if}}

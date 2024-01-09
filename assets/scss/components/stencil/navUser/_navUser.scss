@@ -23,6 +23,10 @@
     top: 26px; // 2
     width: 100%; // 4
     z-index: zIndex("lowest"); // 5.
+    background-color:  #28747a;
+    padding: 1rem 0;
+    min-height: 50px;
+ 
 
     @include breakpoint("medium") {
         padding: 0 spacing("single");
@@ -40,6 +44,7 @@
         position: absolute;
 
         &.is-open {
+            
             &::before {
                 @include css-triangle(
                     $triangle-direction: "bottom",
@@ -66,18 +71,25 @@
 }
 
 .navUser-section {
+    display: flex;
+    margin-right: 100px !important;
+    align-items: center !important;
+    li{
+        padding: 0 5px !important;
+    }
     @include breakpoint("medium") {
         position: relative; // 7
     }
 }
 
+
 .navUser-action {
     color: stencilColor("navUser-color");
-    font-weight: fontWeight("bold");
+    font-size: 20px;
+    font-weight: 500;
     padding: spacing("base") spacing("half");
     text-decoration: none;
-    text-transform: uppercase;
-
+color:white;
     &:hover,
     &.is-open {
         color: stencilColor("navUser-color-hover");
@@ -172,9 +184,10 @@
     }
 
     .dropdown-menu {
-        max-width: remCalc(320px);
-
+        max-width: 30rem ;
+border: none;
         &.is-open {
+
             left: auto !important; // 7
             right: remCalc(5px); // 7
             top: auto !important; // 7
@@ -203,14 +216,26 @@
         }
     }
 }
-
+.wishlist{
+    background-image: url(/assets/img/icon-heart.png);
+    width: 30px;
+    height: 25px;
+    background-repeat: no-repeat;
+    background-size: contain;
+    display: block;
+    cursor: pointer;
+}
 .navUser-item-cartLabel {
-    display: none;
-
+background-image: url(/assets/img/icon-cart.png);
+width: 30px;
+height: 25px;
+background-repeat: no-repeat;
+background-size: contain;
+display: block;
+}
     @include breakpoint("small") {
         display: inline;
     }
-}
 
 .navUser-item--compare {
     display: none;
@@ -221,6 +246,7 @@
 }
 
 .navUser-item--account {
+
     .navUser-or {
         + .navUser-action {
             margin-right: -0.5rem; // 1

@@ -74,14 +74,15 @@
     }
 
     .slick-dots {
-        bottom: spacing("third");
-
+   
+        // bottom: spacing("third");
         @include breakpoint("medium") {
-            bottom: spacing("single");
+            // bottom: spacing("single");
+            bottom: -40px;
         }
 
         li {
-            @include carouselOpaqueBackgrounds($slick-dot-bgColor);
+            // @include carouselOpaqueBackgrounds($slick-dot-bgColor);
         }
     }
 

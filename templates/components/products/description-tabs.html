@@ -24,27 +24,46 @@
         </li>
     {{/all}}
 </ul>
-<div class="tabs-contents">
-    {{#if product.description}}
-        <div class="tab-content is-active" id="tab-description">
-            {{{product.description}}}
+
+<div>
+        <div class="tabs-contents" id="tabs-contents">
+            {{#if product.description}}
+                <div class="tab-content is-active" id="tab-description">
+                    {{{product.description}}}
+                </div>     
+            {{/if}}
+            <dl class="productView-info" id="product-info">
+                {{#filter product.custom_fields 'legacyId' property='name'}}
+                    {{#if value "!=" "NA"}}
+                    <div class="product-info-combo">
+                        <dt class="productView-info-name sku-label">{{lang 'products.sku'}}</dt>
+                        <dd class="productView-info-value" data-product-sku>{{value}}</dd>
+                    </div>
+                       
+                    {{/if}}
+                {{/filter}}
+                {{#if product.brand}}
+                <div class="product-info-combo">
+                    <dt class="productView-info-name">Seller:</dt>
+                    <dd class="productView-info-value"><a href="{{strReplace product.brand.url 'https://store-jb4ize6tlz.mybigcommerce.com/' '/'}}" >{{product.brand.name}}</a></dd>
+                </div>         
+                  
+                    <div class="product-info-combo">
+                        <dt class="productView-info-name">Type:</dt>
+                        <dd class="productView-info-value " style="color: #28747a;"><span id="inject-TypeLink">
+                      {{/if }}
+
+                            {{#each product.custom_fields}}     
+                            {{value}}
+                            {{/each}}
+
+                        
+                         
+                        </span></dd>
+                    </div>
+            </dl>   
         </div>
-    {{/if}}
-    {{#if product.warranty}}
-        <div class="tab-content {{#unless product.description}}is-active{{/unless}}" id="tab-warranty">
-            {{{product.warranty}}}
-        </div>
-    {{/if}}
-    {{#all product.custom_fields theme_settings.show_custom_fields_tabs}}
-      <div class="tab-content" id="tab-{{dashcase (lowercase (sanitize theme_settings.pdp-custom-fields-tab-label))}}">
-         <dl class="productView-info">
-            {{> components/products/custom-fields }}
-         </dl>
-      </div>
-    {{/all}}
-    {{#all settings.show_product_reviews theme_settings.show_product_reviews}}
-       <div class="tab-content" id="tab-reviews">
-           {{> components/products/reviews reviews=product.reviews product=product urls=urls}}
-       </div>
-    {{/all}}
+    
+    <button class="more-less-text no-outline-focus" id="showMoreButton">Show more</button>
 </div>
+
